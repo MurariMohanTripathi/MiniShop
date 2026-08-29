@@ -18,4 +18,15 @@ Content-Type: application/json
 DELETE https://localhost:7053/api/products/2
 
 ###
-GET https://localhost:7053/api/products/2
+GET https://localhost:7053/api/products 
+###
+POST https://localhost:7053/api/products
+Content-Type: application/json
+
+{
+  "name": "Laptop",
+  "description": "Gaming laptop",
+  "price": 65000,
+  "stock": 10,
+  "categoryId": 1
+}
