@@ -1,0 +1,21 @@
+@MiniShop_HostAddress = http://localhost:5199
+
+GET {{MiniShop_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
+PUT https://localhost:7053/api/products/2
+Content-Type: application/json
+
+{
+  "name": "Gaming Mouse",
+  "description": "Wireless RGB Gaming Mouse",
+  "price": 1499,
+  "stock": 30
+}
+
+###
+DELETE https://localhost:7053/api/products/2
+
+###
+GET https://localhost:7053/api/products/2
