@@ -4,29 +4,33 @@ GET {{MiniShop_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
-PUT https://localhost:7053/api/products/2
+GET https://localhost:7053/api/orders
+
+###
+DELETE https://localhost:7053/api/cart/items/1
+
+###
+GET https://localhost:7053/api/products/6
+###
+GET https://localhost:7053/api/cart
+###
+POST https://localhost:7053/api/cart/items
 Content-Type: application/json
 
 {
-  "name": "Gaming Mouse",
-  "description": "Wireless RGB Gaming Mouse",
-  "price": 1499,
-  "stock": 30
+  "productId": 6,
+  "quantity": 2
 }
 
 ###
-DELETE https://localhost:7053/api/products/2
+POST https://localhost:7053/api/orders/checkout
 
 ###
-GET https://localhost:7053/api/products 
-###
-POST https://localhost:7053/api/products
+POST https://localhost:7053/api/auth/register
 Content-Type: application/json
 
 {
-  "name": "Laptop",
-  "description": "Gaming laptop",
-  "price": 65000,
-  "stock": 10,
-  "categoryId": 1
+  "name": "Test User",
+  "email": "test@minishop.com",
+  "password": "Password123"
 }
