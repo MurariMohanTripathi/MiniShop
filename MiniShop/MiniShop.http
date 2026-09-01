@@ -42,6 +42,16 @@ Content-Type:application/json
   "password":"Password123"
 }
 ###
-POSt https://localhost:7053/api/products
+POSt https://localhost:7053/api/products  
 Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiVGVzdCBVc2VyIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZWlkZW50aWZpZXIiOiIxIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoidGVzdEBtaW5pc2hvcC5jb20iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiIiLCJleHAiOjE3ODgzMDE3NTksImlzcyI6Ik1pbmlTaG9wIiwiYXVkIjoiTWluaVNob3BVc2VycyJ9.gLpgwgQJ7VhAQOLQfmjK5eHuqGogaekzEAwjO2BPw_k
 
+###
+POST https://localhost:7053/api/auth/register
+Content-Type: application/json
+
+{ 
+  "name": "Admin User",
+  "email": "admin@minishop.com",
+  "password": "Password123",
+  "adminCode": "MiniShopAdmin2026"
+}

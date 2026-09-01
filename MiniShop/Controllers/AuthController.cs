@@ -35,7 +35,7 @@ namespace MiniShop.Controllers
                 return BadRequest("Email already exists.");
             }
             var role = "Customer";
-            var adminCode = _configuration["AdminRegistrationCode"];
+            var adminCode = _configuration["AdminRegistration:Code"];
             if (!string.IsNullOrEmpty(dto.AdminCode))
             {
                 if (dto.AdminCode != adminCode)
