@@ -4,10 +4,13 @@ using MiniShop.Data;
 using MiniShop.DTOs;
 using MiniShop.Models;
 using System.Runtime.InteropServices;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 
 namespace MiniShop.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CartController : ControllerBase
@@ -30,12 +33,14 @@ namespace MiniShop.Controllers
                 return BadRequest("Not enough stock Available");
             }
 
+            var userId = GetUserId();
             var cart = await _context.Carts
                 .Include(c => c.Items)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(c => c.UserId == userId);
+
             if (cart == null)
             {
-                cart = new Cart();
+                cart = new Cart { UserId = userId };
                 _context.Carts.Add(cart);
                 await _context.SaveChangesAsync();
             }
@@ -68,10 +73,11 @@ namespace MiniShop.Controllers
         [HttpGet]
         public async Task<ActionResult<CartResponseDto>> GetCart()
         {
+            var userId = GetUserId();
             var cart = await _context.Carts
                 .Include(c => c.Items)
                 .ThenInclude(i => i.Product)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(c => c.UserId == userId);
             if (cart == null)
             {
                 return NotFound("Cart Not Found");
@@ -95,9 +101,11 @@ namespace MiniShop.Controllers
         [HttpPut("items/{id}")]
         public async Task<IActionResult> UpdateCartItem(int id, int quantity)
         {
+            var userId = GetUserId();
             var cartItem = await _context.CartItems
             .Include(i => i.Product)
-            .FirstOrDefaultAsync(i => i.Id == id);
+            .Include(i => i.Cart)
+            .FirstOrDefaultAsync(i => i.Id == id && i.Cart!.UserId == userId);
             if (cartItem == null)
             {
                 return NotFound("Cart item not found.");
@@ -126,7 +134,10 @@ namespace MiniShop.Controllers
         [HttpDelete("items/{id}")]
         public async Task<IActionResult> RemoveCartItem(int id)
         {
-            var cartItem = await _context.CartItems.FindAsync(id);
+            var userId = GetUserId();
+            var cartItem = await _context.CartItems
+                .Include(i => i.Cart)
+                .FirstOrDefaultAsync(i => i.Id == id && i.Cart!.UserId == userId );
 
             if (cartItem == null)
             {
@@ -135,6 +146,11 @@ namespace MiniShop.Controllers
             _context.CartItems.Remove(cartItem);
             await _context.SaveChangesAsync();
             return NoContent();
+        }
+        public int GetUserId()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.Parse(userId!);
         }
     }
 }

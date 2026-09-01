@@ -34,10 +34,21 @@ namespace MiniShop.Controllers
             {
                 return BadRequest("Email already exists.");
             }
+            var role = "Customer";
+            var adminCode = _configuration["AdminRegistrationCode"];
+            if (!string.IsNullOrEmpty(dto.AdminCode))
+            {
+                if (dto.AdminCode != adminCode)
+                {
+                    return BadRequest("Invalid admin code.");
+                }
+                role = "Admin";
+            }
             var user = new User
             {
                 Name = dto.Name,
-                Email = dto.Email
+                Email = dto.Email,
+                Role = role
             };
             user.PasswordHash = _passwordHasher.HashPassword(user, dto.Password);
             _context.Users.Add(user);
@@ -70,7 +81,8 @@ namespace MiniShop.Controllers
              {
                    new Claim(ClaimTypes.Name, user.Name),
                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                   new Claim(ClaimTypes.Email, user.Email)
+                   new Claim(ClaimTypes.Email, user.Email),
+                   new Claim(ClaimTypes .Role, user.Role)
              };
 
             var key = new SymmetricSecurityKey(

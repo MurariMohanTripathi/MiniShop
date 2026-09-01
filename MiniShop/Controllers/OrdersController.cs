@@ -1,12 +1,15 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 using MiniShop.Data;
 using MiniShop.DTOs;
 using MiniShop.Models;
 
 namespace MiniShop.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class OrdersController : ControllerBase
@@ -20,10 +23,11 @@ namespace MiniShop.Controllers
         [HttpPost("checkout")]
         public async Task<IActionResult> Checkout()
         {
+            var userId = GetUserId();
             var cart = await _context.Carts
                 .Include(c => c.Items)
                 .ThenInclude(i => i.Product)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(c => c.UserId == userId);
 
             if (cart == null || cart.Items.Count == 0)
             {
@@ -45,7 +49,7 @@ namespace MiniShop.Controllers
                 }
             }
 
-            var order = new Order();
+            var order = new Order { UserId = userId };
 
             foreach (var item in cart.Items)
             {
@@ -81,7 +85,9 @@ namespace MiniShop.Controllers
         [HttpGet]
         public async Task<ActionResult<List<OrderResponseDto>>> GetOrders()
         {
+            var userId = GetUserId();
             var orders = await _context.Orders
+                .Where(o=>o.UserId == userId)
                 .Include(o => o.Items)
                 .Select(o => new OrderResponseDto
                 {
@@ -107,9 +113,10 @@ namespace MiniShop.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<OrderResponseDto>> GetOrderById(int id)
         {
+            var userId = GetUserId();
             var order = await _context.Orders
+                .Where(o=>o.Id == id && o.UserId == userId)
                 .Include(o => o.Items)
-                .Where(o => o.Id == id)
                 .Select(o => new OrderResponseDto
                 {
                     Id = o.Id,
@@ -134,6 +141,11 @@ namespace MiniShop.Controllers
             }
 
             return Ok(order);
+        }
+        private int GetUserId()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.Parse(userId!);
         }
     }
 }

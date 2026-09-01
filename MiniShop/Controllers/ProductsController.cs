@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using MiniShop.Models;
 using MiniShop.Data;
 using MiniShop.DTOs;
@@ -60,6 +61,7 @@ namespace MiniShop.Controllers
             return Ok(product);
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPost]
         public async Task<ActionResult<Product>> CreateProduct(CreateProductDto dto)
         {
@@ -78,7 +80,7 @@ namespace MiniShop.Controllers
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, product);
         }
-
+        [Authorize(Roles = "Admin")]    
         [HttpPut("{id}")]
         public async Task<ActionResult<Product>> UpdateProduct(int id, UpdateProductDto dto)
         {
@@ -98,7 +100,7 @@ namespace MiniShop.Controllers
 
             return Ok(product);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
