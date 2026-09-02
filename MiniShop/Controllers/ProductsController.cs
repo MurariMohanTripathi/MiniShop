@@ -61,7 +61,7 @@ namespace MiniShop.Controllers
             return Ok(product);
         }
 
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<Product>> CreateProduct(CreateProductDto dto)
         {
