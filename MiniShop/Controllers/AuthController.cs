@@ -72,7 +72,7 @@ namespace MiniShop.Controllers
             return Ok(new
             {
                 token,
-                user = new { user.Id, user.Name, user.Email }
+                user = new { user.Id, user.Name, user.Email ,user.Role}
             });
         }
         private string GenerateJwtToken(User user)

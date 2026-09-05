@@ -26,12 +26,18 @@ function Navbar() {
           <>
             <Link to="/cart">Cart</Link>
             {" | "}
+
             <Link to="/orders">Orders</Link>
             {" | "}
 
-            <span>
-              Hello, {user?.name}
-            </span>
+            {user?.role === "Admin" && (
+              <>
+                <Link to="/admin/products">Admin</Link>
+                {" | "}
+              </>
+            )}
+
+            <span>Hello, {user?.name}</span>
 
             {" | "}
 
@@ -43,6 +49,7 @@ function Navbar() {
           <>
             <Link to="/login">Login</Link>
             {" | "}
+
             <Link to="/register">Register</Link>
           </>
         )}
